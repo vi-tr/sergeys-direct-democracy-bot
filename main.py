@@ -4,6 +4,7 @@
 #tut importi
 import discord
 from discord import Intents, Client, Message
+from discord.ext import commands
 from typing import *
 import os
 from dotenv import load_dotenv
@@ -18,28 +19,27 @@ TOKEN: Final[str] = os.getenv('BOT_TOKEN')
 
 intents = discord.Intents.default()
 intents.message_content = True
-client = discord.Client(intents=intents)
+bot = commands.Bot(
+    command_prefix="/",
+    intents = intents
+)
 
 # Eto tochka vhoda
 def main():
-    client.run(token=TOKEN)
+    bot.run(token=TOKEN)
 #Anton Franssen is here XD
 #26.03.2024
 
 #Не знаю почему, но без аргумента intents у меня ничего не работает :)
 #В любом случае, оно никак не должно помешать работе бота   
 
-@client.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(f'{bot.user} has connected to Discord!')
 
-@client.event
-async def send(message: Message) -> None:
-    if message.author == client.user:
-        return
-    
-    if(message.content == "Testing message"):
-        await message.channel.send("NO")
+@bot.command(name='lend_money')
+async def lend_money(ctx):
+    await ctx.send("Неа")
+
 
 # Eto todge tochka vhoda
 if __name__ == "__main__":
