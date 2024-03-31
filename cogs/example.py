@@ -1,3 +1,4 @@
+from vote import vote, Importance
 import discord
 from discord.ext import commands
 
@@ -13,6 +14,9 @@ class SimpleCog(commands.Cog):
     @commands.command(name='lend_money')
     async def simple_command(self, ctx):
         await ctx.send("Неа")    
+    @commands.command(name='poll')
+    async def important_poll(self, ctx):
+        await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
 
 # Вот эту часть кода нужно пистаь обязательно 
 # На самом деле ничего сложного тут  нет
