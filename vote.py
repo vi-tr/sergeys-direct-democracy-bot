@@ -27,10 +27,10 @@ async def vote(client: discord.Client,
         # Don't know the proper way to do this in python yet.
         ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
         title: str, options: List[str],
+        symbols: str='thumbs',
         timeout: float|None=None, count: float|None=None,
         desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
 
-    assert len(options) == 2, 'Only binary choices supported for now' # TODO
     endtime = time.time() + (importance.timeout() if timeout is None else timeout)
     count = max(1, int(len(ctx.guild.members) * (importance.count() if count is None else count))) # Floor, not round
 
@@ -39,10 +39,22 @@ async def vote(client: discord.Client,
         colour=0xed333b, timestamp=datetime.now()
     )
     embed.set_author(name="Голосование")
-    #for f in options: embed.add_field(name=f, value="0", inline=False)
-    embed.add_field(name=options[0], value="👍 (0)", inline=False)
-    embed.add_field(name=options[1], value="👎 (0)", inline=False)
+    symbol_set: List[str] = []
+    match symbols:
+        case 'thumbs':
+            match len(options):
+                case 2: symbol_set = ["👍", "👎"]
+                case 3: symbol_set = ["👍", "✊", "👎"]
+                case _: assert False
+        case 'letters':
+            symbol_set = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾"]
+        case 'numbers':
+            symbol_set = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+    assert len(options) <= len(symbol_set), 'Количество опций голосование превышает количество доступных символов'
+
+    for i, f in enumerate(options): embed.add_field(name=f, value=symbol_set[i]+" (0)", inline=False)
     msg = await ctx.send(embed=embed)
+    for i in range(len(options)): await msg.add_reaction(symbol_set[i])
     _logger.info(f"Vote {msg.id} started")
     result: Set[int] = set()
     try:
@@ -50,26 +62,11 @@ async def vote(client: discord.Client,
         while sum(votes) < count:
             add, remove = asyncio.create_task(client.wait_for('reaction_add')), asyncio.create_task(client.wait_for('reaction_remove'))
             first = (await asyncio.wait([add, remove], return_when=asyncio.FIRST_COMPLETED, timeout=endtime-time.time()))[0].pop()
-            if first is add:
-                remove.cancel()
-                if   str(first.result()[0].emoji)=='👍':
-                    votes[0]+=1
-                    embed.set_field_at(0, name=embed.fields[0].name, value=f"👍 ({votes[0]})")
-                    await msg.edit(embed=embed)
-                elif str(first.result()[0].emoji)=='👎':
-                    votes[1]+=1
-                    embed.set_field_at(1, name=embed.fields[1].name, value=f"👎 ({votes[1]})")
-                    await msg.edit(embed=embed)
-            else:
-                add.cancel()
-                if   str(first.result()[0].emoji)=='👍':
-                    votes[0]-=1
-                    embed.set_field_at(0, name=embed.fields[0].name, value=f"👍 ({votes[0]})")
-                    await msg.edit(embed=embed)
-                elif str(first.result()[0].emoji)=='👎':
-                    votes[1]-=1
-                    embed.set_field_at(1, name=embed.fields[1].name, value=f"👎 ({votes[1]})")
-                    await msg.edit(embed=embed)
+            idx = symbol_set.index(str(first.result()[0].emoji))
+            if first is add: remove.cancel(); votes[idx]+=1
+            else:            add.cancel();    votes[idx]-=1
+            embed.set_field_at(idx, name=embed.fields[idx].name, value=f"{symbol_set[idx]} ({votes[idx]})", inline=False)
+            await msg.edit(embed=embed)
         result.add(max(enumerate(votes),key=lambda x:x[1])[0])
         _logger.info(f"Vote {msg.id} finished successfully")
     except asyncio.TimeoutError: _logger.info(f"Vote {msg.id} timed out")

@@ -19,6 +19,8 @@ class SimpleCog(commands.Cog):
         choice = await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
         if choice.pop()==0: await ctx.send("Вы реально выбрали А?")
         else: await ctx.send("Вы реально выбрали Б?")
+        choice = await vote(self.bot, ctx, "Что РЕАЛЬНО лучше?", ["Вариант А", "Вариант Б", "Вариант В (секрет)"], symbols='letters', importance=Importance.minor)
+        await ctx.send("Дауж....")
 
 # Вот эту часть кода нужно пистаь обязательно 
 # На самом деле ничего сложного тут  нет
