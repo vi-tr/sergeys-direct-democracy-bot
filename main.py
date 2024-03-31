@@ -1,10 +1,9 @@
+import logging
 import discord
 from discord.ext import commands
 from typing import Final
 import os
 import asyncio
-
-from discord import app_commands
 
 # Токен передаем через .env файл, если хотите его узнать, пишите мне, Антону или Вите
 TOKEN: Final[str|None] = os.getenv('BOT_TOKEN')
@@ -16,7 +15,7 @@ INTENTS: Final[discord.Intents] = discord.Intents(
     message_content=True, # TODO: App/hybrid commands since apparently no one else can figure them out
     messages=True,
     members=True,
-    reactions=True,
+    guild_reactions=True,
     typing=False,
     presences=False,
 )
@@ -29,6 +28,7 @@ async def load_extensions():
             await bot.load_extension(f"cogs.{filename[:-3]}")
 
 async def main():
+    discord.utils.setup_logging(level=logging.INFO)
     async with bot:
         await load_extensions()
         await bot.start(TOKEN)
