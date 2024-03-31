@@ -39,7 +39,9 @@ async def vote(client: discord.Client,
         colour=0xed333b, timestamp=datetime.now()
     )
     embed.set_author(name="Голосование")
-    for f in options: embed.add_field(name=f, value="0", inline=False)
+    #for f in options: embed.add_field(name=f, value="0", inline=False)
+    embed.add_field(name=options[0], value="👍 (0)", inline=False)
+    embed.add_field(name=options[1], value="👎 (0)", inline=False)
     msg = await ctx.send(embed=embed)
     _logger.info(f"Vote {msg.id} started")
     result: Set[int] = set()
@@ -52,21 +54,21 @@ async def vote(client: discord.Client,
                 remove.cancel()
                 if   str(first.result()[0].emoji)=='👍':
                     votes[0]+=1
-                    embed.set_field_at(0, name=embed.fields[0].name, value=str(votes[0]))
+                    embed.set_field_at(0, name=embed.fields[0].name, value=f"👍 ({votes[0]})")
                     await msg.edit(embed=embed)
                 elif str(first.result()[0].emoji)=='👎':
                     votes[1]+=1
-                    embed.set_field_at(1, name=embed.fields[1].name, value=str(votes[1]))
+                    embed.set_field_at(1, name=embed.fields[1].name, value=f"👎 ({votes[1]})")
                     await msg.edit(embed=embed)
             else:
                 add.cancel()
                 if   str(first.result()[0].emoji)=='👍':
                     votes[0]-=1
-                    embed.set_field_at(0, name=embed.fields[0].name, value=str(votes[0]))
+                    embed.set_field_at(0, name=embed.fields[0].name, value=f"👍 ({votes[0]})")
                     await msg.edit(embed=embed)
                 elif str(first.result()[0].emoji)=='👎':
                     votes[1]-=1
-                    embed.set_field_at(1, name=embed.fields[1].name, value=str(votes[1]))
+                    embed.set_field_at(1, name=embed.fields[1].name, value=f"👎 ({votes[1]})")
                     await msg.edit(embed=embed)
         result.add(max(enumerate(votes),key=lambda x:x[1])[0])
         _logger.info(f"Vote {msg.id} finished successfully")
