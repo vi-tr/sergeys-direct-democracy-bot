@@ -2,9 +2,10 @@ import discord
 import asyncio
 import time
 from datetime import datetime
-from typing import List, Set
+from typing import List, Set, Final
 from logging import getLogger
 from enum import Enum
+from math import ceil
 
 _logger = getLogger(__name__)
 
@@ -20,6 +21,11 @@ class Importance(Enum):
             case Importance.minor: return 0.1
             case Importance.medium: return 0.3
             case Importance.major: return 0.6
+
+def bar_gen(percentage: float, size: int):
+    chars: Final[str] = ' ▁▂▃▄▅▆▇█'
+    pos = percentage*size
+    return '█'*int(pos) + ('' if int(pos)==pos else chars[int(pos%1.0*len(chars))]) + ' '*(size-ceil(pos))
 
 
 async def vote(client: discord.Client,
@@ -65,7 +71,8 @@ async def vote(client: discord.Client,
             idx = symbol_set.index(str(first.result()[0].emoji))
             if first is add: remove.cancel(); votes[idx]+=1
             else:            add.cancel();    votes[idx]-=1
-            embed.set_field_at(idx, name=embed.fields[idx].name, value=f"{symbol_set[idx]} ({votes[idx]})", inline=False)
+            for i in range(len(options)):
+                embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbol_set[i]} {bar_gen(votes[i]/sum(votes),20)} ({votes[i]})", inline=False)
             await msg.edit(embed=embed)
         result.add(max(enumerate(votes),key=lambda x:x[1])[0])
         _logger.info(f"Vote {msg.id} finished successfully")
