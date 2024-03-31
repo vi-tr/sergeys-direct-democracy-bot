@@ -30,6 +30,7 @@ async def vote(client: discord.Client,
         timeout: float|None=None, count: float|None=None,
         desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
 
+    assert len(options) == 2, 'Only binary choices supported for now' # TODO
     endtime = time.time() + (importance.timeout() if timeout is None else timeout)
     count = max(1, int(len(ctx.guild.members) * (importance.count() if count is None else count))) # Floor, not round
 
@@ -41,18 +42,33 @@ async def vote(client: discord.Client,
     for f in options: embed.add_field(name=f, value="0", inline=False)
     msg = await ctx.send(embed=embed)
     _logger.info(f"Vote {msg.id} started")
-    result = set()
+    result: Set[int] = set()
     try:
-        votes = 0
-        while votes < count:
+        votes = [0]*len(options)
+        while sum(votes) < count:
             add, remove = asyncio.create_task(client.wait_for('reaction_add')), asyncio.create_task(client.wait_for('reaction_remove'))
             first = (await asyncio.wait([add, remove], return_when=asyncio.FIRST_COMPLETED, timeout=endtime-time.time()))[0].pop()
             if first is add:
                 remove.cancel()
-                votes+=1
+                if   str(first.result()[0].emoji)=='👍':
+                    votes[0]+=1
+                    embed.set_field_at(0, name=embed.fields[0].name, value=str(votes[0]))
+                    await msg.edit(embed=embed)
+                elif str(first.result()[0].emoji)=='👎':
+                    votes[1]+=1
+                    embed.set_field_at(1, name=embed.fields[1].name, value=str(votes[1]))
+                    await msg.edit(embed=embed)
             else:
                 add.cancel()
-                votes-=1
+                if   str(first.result()[0].emoji)=='👍':
+                    votes[0]-=1
+                    embed.set_field_at(0, name=embed.fields[0].name, value=str(votes[0]))
+                    await msg.edit(embed=embed)
+                elif str(first.result()[0].emoji)=='👎':
+                    votes[1]-=1
+                    embed.set_field_at(1, name=embed.fields[1].name, value=str(votes[1]))
+                    await msg.edit(embed=embed)
+        result.add(max(enumerate(votes),key=lambda x:x[1])[0])
         _logger.info(f"Vote {msg.id} finished successfully")
     except asyncio.TimeoutError: _logger.info(f"Vote {msg.id} timed out")
     return result
