@@ -9,8 +9,16 @@ import asyncio
 TOKEN: Final[str|None] = os.getenv('BOT_TOKEN')
 assert TOKEN is not None, "Токен не найден, проверьте что переменная окружения $BOT_TOKEN содержит токен"
 
-# это полное разрешение на все действия, иначе реализовать это походу не получится
-bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+INTENTS: Final[discord.Intents] = discord.Intents(
+    message_content=True, # TODO: App/hybrid commands since apparently no one else can figure them out
+    messages=True,
+    members=True,
+    guild_reactions=True,
+    guilds=True,
+    typing=False,
+    presences=False,
+)
+bot = commands.Bot(command_prefix="/", intents=INTENTS)
 
 # здесь не нужно ничего трогать
 async def load_extensions():

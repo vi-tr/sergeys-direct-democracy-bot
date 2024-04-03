@@ -8,15 +8,15 @@ class RoleGive(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
     @commands.command(name='give_role')
-    async def give_role(self, 
+    async def give_role(self,
                     ctx : discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
-                    id_name : str, 
-                    role : str):     
-        # Это часть кода возвращает либо роль, либо ничего, пожтому трай/експект тут не катит 
+                    id_name : str,
+                    role : str):
+        # Это часть кода возвращает либо роль, либо ничего, пожтому трай/експект тут не катит
         role_ = discord.utils.get(ctx.guild.roles, name=role)
         if role_ == None:
             await ctx.send("Роль не найдена")
-            return  
+            return
         # Аналогично
         member = discord.utils.get(ctx.guild.members, name=id_name)
         if member == None:
@@ -29,12 +29,12 @@ class RoleGive(commands.Cog):
                 return
             try:
                 # А вот эта часть кода уже может выдать ошибку. Так как бот не может присвоить роль выше своей (ну типо)
-                await member.add_roles(role_)  
-                await ctx.send("Роль выдана")    
+                await member.add_roles(role_)
+                await ctx.send("Роль выдана")
             except:
                 # Вот для этого тут и стоит это
                 await ctx.send("Операция невозможна")
-                return  
+                return
 
 async def setup(bot):
     await bot.add_cog(RoleGive(bot))
