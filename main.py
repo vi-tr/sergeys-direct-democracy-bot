@@ -6,7 +6,6 @@ import os
 import asyncio
 import dotenv
 
-
 dotenv.load_dotenv()
 # Токен передаем через .env файл, если хотите его узнать, пишите мне, Антону или Вите
 TOKEN: Final[str|None] = os.getenv('BOT_TOKEN')

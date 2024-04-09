@@ -31,7 +31,7 @@ class RoleManipulation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='add_role')
+    @commands.command(name='add_role_poll')
     async def create_role(
             self,
             ctx: TextChannel | VoiceChannel | StageChannel,
