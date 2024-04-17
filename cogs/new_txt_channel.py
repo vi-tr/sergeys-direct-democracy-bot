@@ -8,7 +8,7 @@ class NewTXTChannel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command("create_txt_channel")
     async def create_text_channel(self, ctx, category_name: str, channel_name: str):
         guild = ctx.guild
         category = discord.utils.get(guild.categories, name=category_name)
