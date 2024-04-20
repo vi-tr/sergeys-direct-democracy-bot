@@ -11,10 +11,10 @@ class NewTXTChannel(commands.Cog):
     @commands.command("create_txt_channel")
     async def create_text_channel(self, ctx, category: commands.CategoryChannelConverter, channel_name: str):
         guild = ctx.guild
-        category_name = category.name  # Получаем имя категории
+        category_name = category.name
 
         choice = await vote(self.bot, ctx, f"Создать ли текстовый канал {channel_name} в категории {category_name}",
-                            ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+                            ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
             return
