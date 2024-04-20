@@ -2,10 +2,13 @@ import discord
 import asyncio
 import time
 from datetime import datetime
-from typing import List, Set, Final
+from typing import List, Set, Final, Tuple, Dict
 from logging import getLogger
 from enum import Enum
+
 from math import ceil
+from itertools import groupby
+from operator import itemgetter
 
 _logger = getLogger(__name__)
 
@@ -64,18 +67,26 @@ async def vote(client: discord.Client,
     _logger.info(f"Vote {msg.id} started")
     result: Set[int] = set()
     try:
-        votes = [0]*len(options)
-        while sum(votes) < count:
+        votes: Dict[int,int] = {}
+        vote_amounts: List[Tuple[int,int]] = []
+        while len(votes) < count:
             add, remove = asyncio.create_task(client.wait_for('reaction_add')), asyncio.create_task(client.wait_for('reaction_remove'))
             first = (await asyncio.wait([add, remove], return_when=asyncio.FIRST_COMPLETED, timeout=endtime-time.time()))[0].pop()
             try: idx = symbol_set.index(str(first.result()[0].emoji))
             except ValueError: continue
-            if first is add: remove.cancel(); votes[idx]+=1
-            else:            add.cancel();    votes[idx]-=1
+            if first is add:
+                remove.cancel()
+                votes[add.result()[1].id]=idx
+            else:
+                add.cancel()
+                try: del votes[remove.result()[1].id]
+                except KeyError: _logger.warning(f"Somehow a non-existent vote on {msg.id} was removed.")
+            dvotes = dict(vote_amounts := [(k,sum(1 for _ in v)) for k,v in groupby(sorted(votes.values()))])
             for i in range(len(options)):
-                embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbol_set[i]} {bar_gen(votes[i]/sum(votes),20)} ({votes[i]})", inline=False)
+                embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbol_set[i]} {bar_gen(dvotes.get(i,0)/max(1,len(votes)),20)} ({dvotes.get(i,0)})", inline=False)
             await msg.edit(embed=embed)
-        result.add(max(enumerate(votes),key=lambda x:x[1])[0])
-        _logger.info(f"Vote {msg.id} finished successfully")
+        max_vl = max(vote_amounts,key=itemgetter(1))
+        result = set(m[0] for m in vote_amounts if m[1]==max_vl[1])
+        _logger.info(f"Vote {msg.id} finished successfully.")
     except asyncio.TimeoutError: _logger.info(f"Vote {msg.id} timed out")
     return result
