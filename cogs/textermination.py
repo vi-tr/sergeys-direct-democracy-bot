@@ -11,7 +11,7 @@ class Textermination(commands.Cog):
     @commands.command("textermination")
     async def delete_text_channel(self, ctx, category: commands.CategoryChannelConverter, channel_name: str):
         guild = ctx.guild
-        category_name = category.name  # Получаем имя категории
+        category_name = category.name  # commands.CategoryChannelConverter принимает и ID и имя канала, так что это запись вполне оправдана
 
         channel = discord.utils.get(category.text_channels, name=channel_name)
 
