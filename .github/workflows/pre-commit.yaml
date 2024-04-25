@@ -1,4 +1,4 @@
-name: enforce-style
+name: run-pre-commit
 
 on:
   - pull_request
@@ -9,14 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: dos2unix
-          version: 1.0
       - uses: actions/setup-python@v3
       - uses: pre-commit/action@v3.0.1
-        with:
-          extra_args: dos2unix $(git ls-files)
-      - uses: pre-commit/action@v3.0.1
-        with:
-          extra_args: git rm $(git ls-files -i -c --exclude-from=.gitignore)
