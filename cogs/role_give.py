@@ -23,7 +23,7 @@ class RoleGive(commands.Cog):
             await ctx.send("Юзер не найден")
             return
         else:
-            choice = await vote(self.bot, ctx, f"Дать ли пользователю {id_name} роль - {role}", ["Да", "Нет"], symbols='letters', importance=Importance.medium)
+            choice = await vote(self.bot, ctx, f"Дать ли пользователю {id_name} роль - {role}", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
             if choice.pop()==1:
                 await ctx.send("Голосование провалилось")
                 return

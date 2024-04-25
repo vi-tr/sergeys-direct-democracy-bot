@@ -9,9 +9,9 @@ class NewTXTChannel(commands.Cog):
         self.bot = bot
 
     @commands.command("create_txt_channel")
-    async def create_text_channel(self, ctx, category_name: str, channel_name: str):
+    async def create_text_channel(self, ctx, category: commands.CategoryChannelConverter, channel_name: str):
         guild = ctx.guild
-        category = discord.utils.get(guild.categories, name=category_name)
+        category_name = category.name
 
         choice = await vote(self.bot, ctx, f"Создать ли текстовый канал {channel_name} в категории {category_name}",
                             ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
