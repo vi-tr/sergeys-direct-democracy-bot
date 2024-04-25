@@ -13,7 +13,7 @@ class SimpleCog(commands.Cog):
         self.bot = bot
     @commands.command(name='lend_money')
     async def simple_command(self, ctx):
-        await ctx.send("Неа")    
+        await ctx.send("Неа")
     @commands.command(name='poll')
     async def important_poll(self, ctx):
         choice = await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
@@ -22,11 +22,11 @@ class SimpleCog(commands.Cog):
         choice = await vote(self.bot, ctx, "Что РЕАЛЬНО лучше?", ["Вариант А", "Вариант Б", "Вариант В (секрет)"], symbols='letters', importance=Importance.minor)
         await ctx.send("Дауж....")
 
-# Вот эту часть кода нужно пистаь обязательно 
+# Вот эту часть кода нужно пистаь обязательно
 # На самом деле ничего сложного тут  нет
 # Вся разница в вашем случае, будет  за-
 # ключаться в том, что вам вместо  лако-
 # ничного SimpleCog,  нужно  будет  ввести
-# название вашего класса 
+# название вашего класса
 async def setup(bot):
     await bot.add_cog(SimpleCog(bot))

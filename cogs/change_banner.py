@@ -17,7 +17,7 @@ class ChangeIcon(commands.Cog):
             await ctx.send("Голосование провалилось")
         else:
             await ctx.message.attachments[0].save(fp=ctx.message.attachments[0].filename)  # Скачиваем первое изображение, указанное в сообщении вызова команды.
-            name=ctx.message.attachments[0].filename  
+            name=ctx.message.attachments[0].filename
             with open(name, 'rb') as image:
                 await ctx.guild.edit(icon=image.read())  # При помощи метода read() читаем изображение, и ставим его как баннер на сервере
             os.remove(name)  # Удаляем скачанное изображение
