@@ -12,7 +12,7 @@ class ServerManagement(commands.Cog):
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
-        
+
         else:
             try:
                 await ctx.guild.edit(name=new_name)
