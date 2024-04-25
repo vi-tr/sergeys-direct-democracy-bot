@@ -11,13 +11,12 @@ dotenv.load_dotenv()
 TOKEN: Final[str|None] = os.getenv('BOT_TOKEN')
 assert TOKEN is not None, "Токен не найден, проверьте что переменная окружения $BOT_TOKEN содержит токен"
 
-#инициализация бота должна находиться в глобальной области видимости,
-#так как из main обьект класса Client никто не увидит
 INTENTS: Final[discord.Intents] = discord.Intents(
     message_content=True, # TODO: App/hybrid commands since apparently no one else can figure them out
     messages=True,
     members=True,
     guild_reactions=True,
+    guilds=True,
     typing=False,
     presences=False,
 )
