@@ -38,7 +38,7 @@ async def setup(bot):
             except discord.Forbidden:
                 return await ctx.send("У меня нет разрешения на создание роли.")
         '''
-    
+
     """
 import discord
 from discord.ext import commands
