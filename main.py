@@ -19,6 +19,7 @@ INTENTS: Final[discord.Intents] = discord.Intents(
     guilds=True,
     typing=False,
     presences=False,
+    voice_states=True,
 )
 bot = commands.Bot(command_prefix="/", intents=INTENTS)
 
