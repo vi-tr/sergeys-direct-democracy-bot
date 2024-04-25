@@ -1,4 +1,4 @@
-name: run-pre-commit
+name: pre-commit
 
 on:
   - pull_request
@@ -9,8 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: dos2unix
+          version: 1.0
       - uses: actions/setup-python@v3
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.1
       - name: Check if .gitignore contents were pushed
         run: test \! "$(git ls-files -i -c --exclude-from=.gitignore)"
+      - name: Check if .gitattributes were ignored
+        run: test \! "$(dos2unix -ic $(git ls-files))"
