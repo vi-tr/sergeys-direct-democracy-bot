@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-# from create_role import create_role
 from discord import Permissions, TextChannel, VoiceChannel, StageChannel
 from vote import *
 
@@ -49,7 +48,6 @@ class AddRole(commands.Cog):
             if (not role_type):
                 await ctx.reply(f'Типа роли {role_type} не существует в списке возможных ролей!')
 
-    #вот это оставляет желать лучшего, лабы Кемрика на Go на меня плохо влияют
             elif (int(r) > 255 or int(g) > 255 or int(b) > 255 or int(r) < 0 or int(g) < 0 or int(b) < 0):
                 await ctx.reply("Введен неверный формат цвета в RGB :(")
 
@@ -61,9 +59,9 @@ class AddRole(commands.Cog):
                 )
                 await role
 
-                phrases = ["Роль успешно создана!", "Голосование провалилось.", "Люди выбрали третью опцию. Примечание цензурщика: Зачем? Просто в чём смысл? Какая душевная неуравновешенность заставила тебя добавить эту опцию? TODO: Удалить"]
+                phrases = ["Роль успешно создана!", "Голосование провалилось."]
                 
-                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет", "Третья опция"], symbols='letters',importance=Importance.medium)
+                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет"], symbols='letters',importance=Importance.minor)
                 await ctx.reply(phrases[choice.pop()])
                 
         except:
