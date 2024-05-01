@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, mock_open, patch
 from discord.ext import commands
-from cogs.change_banner import ChangeIcon  
+from cogs.change_banner import ChangeIcon
 from main import INTENTS
 
 @pytest.mark.asyncio
@@ -10,7 +10,7 @@ async def test_change_banner():
         mock_func.return_value = set([0])
         mock_reaction = MagicMock()
         mock_user = MagicMock()
-        mock_reaction.emoji = "👍"  
+        mock_reaction.emoji = "👍"
         mock_wait.return_value = (mock_reaction, mock_user)
 
         bot = commands.Bot(command_prefix="/", intents=INTENTS)
