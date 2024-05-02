@@ -14,7 +14,6 @@ class ChangeIcon(commands.Cog):
     async def change_icon(self,
                     ctx : discord.TextChannel | discord.VoiceChannel | discord.StageChannel, key):
         if key!=os.getenv('BOT_TOKEN'):
-            os.chdir("cogs")
             return
         name = None
         try:
