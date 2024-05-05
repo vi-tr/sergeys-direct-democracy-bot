@@ -15,4 +15,4 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Run tests
-        run: TOKEN='test' pytest
+        run: BOT_TOKEN='test' pytest
