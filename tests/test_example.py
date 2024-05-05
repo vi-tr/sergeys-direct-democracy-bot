@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '.')
 from main import INTENTS
 from cogs.example import SimpleCog
 from discord.ext import commands
