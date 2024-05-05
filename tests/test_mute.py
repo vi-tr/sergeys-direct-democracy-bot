@@ -13,14 +13,14 @@ async def test_mute():
         mock_func.return_value = set([0])
         mock_reaction = MagicMock()
         mock_user = MagicMock()
-        mock_reaction.emoji = "👍"  
+        mock_reaction.emoji = "👍"
         mock_wait.return_value = (mock_reaction, mock_user)
 
         bot = commands.Bot(command_prefix="/", intents=INTENTS)
         test_cog = Mute(bot)
         ctx = AsyncMock()
         member = AsyncMock()
-        member.edit = AsyncMock()  
+        member.edit = AsyncMock()
         member.mention = "@TestUser"
 
         await Mute.mute(test_cog, ctx, member)
@@ -34,14 +34,14 @@ async def test_unmute():
         mock_func.return_value = set([0])
         mock_reaction = MagicMock()
         mock_user = MagicMock()
-        mock_reaction.emoji = "👍"  
+        mock_reaction.emoji = "👍"
         mock_wait.return_value = (mock_reaction, mock_user)
 
         bot = commands.Bot(command_prefix="/", intents=INTENTS)
         test_cog = Mute(bot)
         ctx = AsyncMock()
         member = AsyncMock()
-        member.edit = AsyncMock() 
+        member.edit = AsyncMock()
         member.mention = "@TestUser"
 
         await Mute.unmute(test_cog, ctx, member)
