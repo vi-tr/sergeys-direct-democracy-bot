@@ -19,15 +19,14 @@ class Voice(commands.Cog):
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
-        else:     
+        else:
             if category is None:
                 category = await guild.create_category(category_name)
                 await ctx.send(f"Категория '{category_name}' создана.")
-        
+
             await guild.create_voice_channel(channel_name, category=category)
             await ctx.send(f"Голосовой канал '{channel_name}' успешно создан в категории '{category_name}'!")
-        
+
 
 async def setup(bot):
     await bot.add_cog(Voice(bot))
-
