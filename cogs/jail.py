@@ -7,7 +7,6 @@ import asyncio
 
 class Jail(commands.Cog):
     jailed_users = []
-    jail_roles = []
     jail_voices = []
     jail_texts = []
     jail_time = []
@@ -22,20 +21,19 @@ class Jail(commands.Cog):
         if member_id == None:
             await ctx.send("Юзер не найден")
             return
-        role = discord.utils.get(ctx.guild.roles, name="user_jail")
-        if role == None:
-            await ctx.guild.create_role(name="user_jail",permissions=Permissions.membership())
-        await member_id.add_roles(role)
         voice = discord.utils.get(ctx.guild.voice_channels, name="jail_voice")
         if voice == None:
             await ctx.guild.create_voice_channel("jail_voice")
             voice = discord.utils.get(ctx.guild.voice_channels, name="jail_voice")
+        try:
+            await member_id.move_to(voice)
+        except:
+            pass
         text = discord.utils.get(ctx.guild.text_channels, name="jail_text")
         if text == None:
             await ctx.guild.create_text_channel("jail_text")
             text = discord.utils.get(ctx.guild.text_channels, name="jail_text")
         self.jailed_users.append(member_id)
-        self.jail_roles.append(role)
         self.jail_voices.append(voice)
         self.jail_texts.append(text)
         self.jail_time.append(datetime.now())
@@ -70,9 +68,7 @@ class Jail(commands.Cog):
         """Освободить пользователей из тюрьмы по истечении срока."""
         for i in range(len(self.jailed_users)):
             if (datetime.now()-self.jail_time[i])>=timedelta(minutes=self.jail_time_bound[i]):
-                await self.jailed_users[i].remove_roles(self.jail_roles[i])
                 self.jailed_users.remove(self.jailed_users[i])
-                self.jail_roles.remove(self.jail_roles[i])
                 self.jail_voices.remove(self.jail_voices[i])
                 self.jail_texts.remove(self.jail_texts[i])
                 self.jail_time.remove(self.jail_time[i])
