@@ -9,12 +9,12 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: dos2unix
           version: 1.0
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.1
       - name: Check if .gitignore contents were pushed
