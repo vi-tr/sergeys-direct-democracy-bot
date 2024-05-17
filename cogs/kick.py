@@ -16,7 +16,7 @@ class Kick(commands.Cog):
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
         else:
-            await ctx.send(f"{member} был изгнан")
+            await ctx.send(f"Пользователь был изгнан")
             await member.kick()
 
 
