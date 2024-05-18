@@ -8,7 +8,7 @@ class Mute(commands.Cog):
 
     @commands.command(name='mute')
     async def mute(self, ctx, member: discord.Member):
-        choice = await vote(self.bot, ctx, f"Замутить ли пользователя {member.name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
+        choice = await vote(self.bot, ctx, f"Замутить ли пользователя {member.name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
