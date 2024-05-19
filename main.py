@@ -4,7 +4,9 @@ from discord.ext import commands
 from typing import Final
 import os
 import asyncio
+from dotenv import load_dotenv
 
+load_dotenv()
 TOKEN: Final[str|None] = os.getenv('BOT_TOKEN')
 assert TOKEN is not None, "Токен не найден, проверьте что переменная окружения $BOT_TOKEN содержит токен"
 
