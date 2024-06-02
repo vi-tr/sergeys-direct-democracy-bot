@@ -18,7 +18,7 @@ INTENTS: Final[discord.Intents] = discord.Intents(
     presences=False,
     voice_states=True,
 )
-bot = commands.Bot(command_prefix="/", intents=INTENTS)
+bot = commands.Bot(command_prefix="/", intents=INTENTS, help_command=None) #removing the default help command
 
 # здесь не нужно ничего трогать
 async def load_extensions():
