@@ -132,3 +132,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# requirements/requirements-dev fulfill the role
+constraints.txt
