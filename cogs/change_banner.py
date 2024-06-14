@@ -34,11 +34,16 @@ class ChangeIcon(commands.Cog):
     async def change_banner_poll(self,
                     ctx : discord.TextChannel | discord.VoiceChannel | discord.StageChannel):
         choice = await vote(self.bot, ctx=ctx, title=f"Поставить ли новую аву?", options=["Да", "Нет"],
-                        symbols='letters', importance=Importance.medium)
+                        symbols='letters', importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
         else:
             await self.change_icon(ctx,os.getenv('BOT_TOKEN'))
+
+    @change_banner_poll.error #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    async def iconerror(self, ctx, error):
+            # no ideas what to specialize
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(ChangeIcon(bot))

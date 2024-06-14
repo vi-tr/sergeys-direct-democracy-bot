@@ -11,6 +11,27 @@ class Voicexecution(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command("cutegory") #works with txt categories too #need to make external?
+    async def delete_category(self, ctx, category: commands.CategoryChannelConverter):
+        guild = ctx.guild
+
+        category_name = category.name
+
+        if category_name is None:
+            await ctx.send(f"Категория '{category_name}' не найдена на сервере.")
+            return
+
+        choice = await vote(self.bot, ctx, f"Сносим категорию {category_name} и все ее содержимое с сервера?",
+                            ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+        if choice.pop() == 1:
+            await ctx.send("Голосование провалилось")
+            return
+        else:
+            for channel in category.channels:
+                await channel.delete()
+            await category.delete()
+            await ctx.send(f"Категория '{category_name}' успешно удалена вместе со своим содержимым!")
+
     @commands.command("voicexecution")
     async def delete_voicechannel(self, ctx, category: commands.CategoryChannelConverter, channel_name: str):
         guild = ctx.guild
@@ -23,13 +44,18 @@ class Voicexecution(commands.Cog):
             return
 
         choice = await vote(self.bot, ctx, f"Сносим голосовой канал {channel_name} из категории {category_name}?",
-                            ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
+                            ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
             return
         else:
             await channel.delete()
             await ctx.send(f"Голосовой канал '{channel_name}' успешно удален из категории '{category_name}'!")
+
+    @delete_voicechannel.error #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    async def vcerror(self, ctx, error):
+            # no ideas what to specialize
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(Voicexecution(bot))
