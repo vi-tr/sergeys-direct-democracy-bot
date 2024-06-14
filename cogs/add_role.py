@@ -63,11 +63,16 @@ class AddRole(commands.Cog):
 
                 phrases = ["Роль успешно создана!", "Голосование провалилось.", "Люди выбрали третью опцию. Примечание цензурщика: Зачем? Просто в чём смысл? Какая душевная неуравновешенность заставила тебя добавить эту опцию? TODO: Удалить"]
 
-                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет", "Третья опция"], symbols='letters',importance=Importance.medium)
+                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет", "Третья опция"], symbols='letters',importance=Importance.minor)
                 await ctx.reply(phrases[choice.pop()])
 
         except:
             await ctx.reply("Вероятно, параметры комманды /add_role были введены в неверном порядке. Попробуйте снова.")
+
+    @create_role.error #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    async def makerror(self, ctx, error):
+            # no ideas what to specialize
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(AddRole(bot))

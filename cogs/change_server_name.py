@@ -8,7 +8,7 @@ class ServerManagement(commands.Cog):
 
     @commands.command(name='change_server_name')
     async def change_server_name(self, ctx, *, new_name: str):
-        choice = await vote(self.bot, ctx, f"Сменить имя сервера на {new_name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
+        choice = await vote(self.bot, ctx, f"Сменить имя сервера на {new_name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return

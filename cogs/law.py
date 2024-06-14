@@ -2,11 +2,34 @@ import discord
 from discord.ext import commands
 from vote import vote, Importance
 from datetime import datetime
+import os
+import json
 
-laws_dict = {}
+laws_dict = {} #default value
+
+#ОЧЕНЬ ГРУБЫЙ КОСТЫЛЬ(data deployment and collecting zone)
+def get_path(guildid):
+    #Creating global law dir (if doesnt exist already) where all .json law files will exist
+    os.makedirs('./lawfiles', exist_ok=True)
+    #Getting signed laws of your ds server
+    return os.path.join(os.getcwd(),'lawfiles', f'laws_{guildid}.json')
+
+def save_laws(guildid):
+    filepath = get_path(guildid)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(laws_dict, f, ensure_ascii=False, indent=4) #Dumping current law dict to a signed .json in READABLE format (not 1 str)
+
+def load_laws(guildid):
+    global laws_dict
+    filepath = get_path(guildid)
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            laws_dict = json.load(f) #Loading saved .json laws of the server, if found
+    except FileNotFoundError:
+        laws_dict = {} #Else: returning nothing
 
 class Democracy(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot): #idk how to make this an external module properly (commands.Cog.listener() or other stuff just makes the bot double the commands)
         self.bot = bot
         @bot.event
         async def on_message(message):
@@ -37,6 +60,7 @@ class Democracy(commands.Cog):
             'date_added' : datetime.now().strftime("%Y-%m-%d")
         }
 
+        save_laws(ctx.guild.id) #Saving current law list to .json after every addition
         await ctx.send(f'Закон "{law_name}" добавлен.\nОписание: {description}\nВлияет на модерацию:{"Да" if enforce else "Нет"}.')
     
     @commands.command(name='remove_law')
@@ -46,23 +70,26 @@ class Democracy(commands.Cog):
             await ctx.send(f"Закон с названием {law_name} не существует.")
             return
         
-        choice = await vote(self.bot, ctx, f"Удалить ли закон {law_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
+        choice = await vote(self.bot, ctx, f"Удалить ли закон {law_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
         
         del laws_dict[law_name]
 
+        save_laws(ctx.guild.id) #And after every deletion
         await ctx.send(f'Закон "{law_name}" удален.')
     
     @commands.command('laws')
     async def get_law(self, ctx, law_name=None):
+        load_laws(ctx.guild.id) #Getting law list for a server
         if law_name:
             law = laws_dict.get(law_name, None)
             if law:
                 response = (
-                    f'Закон {law_name} от {law["date_added"]}\n\n'
-                    f'Влияет на модерацию: {"Да" if law["enforce"] else "Нет"}\n'
+                    f'Закон {law_name} от {law["date_added"]}\n'
+                    f'(ключевое слово: "{law["keyword"]}")\n'
+                    f'Влияет на модерацию: {"Да" if law["enforce"] else "Нет"}\n\n'
                     f'Описание: {law["description"]}'
                 )
             else:
@@ -73,6 +100,12 @@ class Democracy(commands.Cog):
             else:
                 response = 'Список законов:\n' + '\n'.join(f'{name}: {law["description"]}' for name, law in laws_dict.items())
         await ctx.send(response)
+    @get_law.error #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    @add_law.error
+    @remove_law.error
+    async def lawerror(self, ctx, error):
+            # no ideas what to specialize
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(Democracy(bot))

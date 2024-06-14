@@ -130,9 +130,5 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
-# Cython debug symbols
-<<<<<<< HEAD
-cython_debug/
-=======
-cython_debug/
->>>>>>> ab7f53f (add role without vote)
+# laws
+lawfiles/
