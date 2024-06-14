@@ -17,13 +17,21 @@ class Mute(commands.Cog):
 
     @commands.command(name='unmute')
     async def unmute(self, ctx, member: discord.Member):
-        choice = await vote(self.bot, ctx, f"Размутить ли пользователя {member.name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
+        choice = await vote(self.bot, ctx, f"Размутить ли пользователя {member.name}", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
         await member.edit(mute=False)
         await ctx.send(f"Пользователь {member.mention} был размучен.")
 
+    @mute.error
+    @unmute.error    
+    #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    async def muterror(self, ctx, error):
+        if isinstance(error, commands.MemberNotFound):
+            await ctx.send("Пользователь не найден. ЧАБАНОВ!!!! ЕБИ МЕНЯ В ПЕРДАК!!!!!!")
+        else:
+            await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(Mute(bot))

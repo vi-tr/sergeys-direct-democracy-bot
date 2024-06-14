@@ -15,10 +15,9 @@ class Jail(commands.Cog):
         self.bot = bot
         self.unjail_task = self.unjail_users.start()
 
-    async def jail(self, ctx, member: str, time: int):
+    async def jail(self, ctx, member: discord.Member, time: int):
         """Поместить пользователя в тюрьму на указанное количество минут."""
-        member_id = discord.utils.get(ctx.guild.members, name=member)
-        if member_id == None:
+        if member == None:
             await ctx.send("Юзер не найден")
             return
         voice = discord.utils.get(ctx.guild.voice_channels, name="jail_voice")
@@ -26,14 +25,14 @@ class Jail(commands.Cog):
             await ctx.guild.create_voice_channel("jail_voice")
             voice = discord.utils.get(ctx.guild.voice_channels, name="jail_voice")
         try:
-            await member_id.move_to(voice)
+            await member.move_to(voice)
         except:
             pass
         text = discord.utils.get(ctx.guild.text_channels, name="jail_text")
         if text == None:
             await ctx.guild.create_text_channel("jail_text")
             text = discord.utils.get(ctx.guild.text_channels, name="jail_text")
-        self.jailed_users.append(member_id)
+        self.jailed_users.append(member)
         self.jail_voices.append(voice)
         self.jail_texts.append(text)
         self.jail_time.append(datetime.now())
@@ -41,8 +40,9 @@ class Jail(commands.Cog):
         await asyncio.sleep(60*time)
 
     @commands.command("go_to_jail")
-    async def poll_jail(self,ctx,member: str,time:str, *reason):
+    async def poll_jail(self,ctx,member: discord.Member,time:str, *reason):
         reason = ''.join([f" {i}" for i in reason])
+
         try:
             time=int(float(time))
             if time<=0:
@@ -57,7 +57,7 @@ class Jail(commands.Cog):
         except:
             await ctx.send("Задано нереальное время")
             return
-        choice = await vote(self.bot, ctx, f"Посадить ли пользователя {member} на {time} минут за{reason}", ["Да", "Нет"], importance=Importance.medium)
+        choice = await vote(self.bot, ctx, f"Посадить ли пользователя {member} на {time} минут за{reason}", ["Да", "Нет"], importance=Importance.minor)
         if choice.pop()==0:
             await ctx.send(f"{member} отправился в тюрьму на {time} минут, за{reason}")
             await self.jail(ctx,member,int(time))
@@ -87,6 +87,11 @@ class Jail(commands.Cog):
         if message.author in self.jailed_users:
             if message.channel not in self.jail_texts:
                 await message.delete()
+
+    @poll_jail.error #local exceptions handler
+    async def jailerror(self, ctx, error):
+        await ctx.send(f"Непредвиденная ошибка: {error}")
+
 
 async def setup(bot):
     await bot.add_cog(Jail(bot))
