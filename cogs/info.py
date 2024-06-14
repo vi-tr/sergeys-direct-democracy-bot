@@ -8,7 +8,7 @@ class Info(commands.Cog):
         self.bot = bot
 # mostly debug functions giving raw info to observe
     @commands.command(name='role_info')
-    async def role_info(self, ctx, role_input: str): 
+    async def role_info(self, ctx, role_input: str):
         role = discord.utils.get(ctx.guild.roles, id=int(role_input)) if role_input.isdigit() else None
 
         if role is None:
@@ -16,7 +16,7 @@ class Info(commands.Cog):
         if role is None:
             await ctx.send("Роль не найдена.")
             return
-        
+
         info = (
             f"Название: {role.name}\n"
             f"ID: {role.id}\n"
@@ -32,7 +32,7 @@ class Info(commands.Cog):
         await ctx.send(f"Информация о роли {role_input}:\n{info}")
 
     @commands.command(name='user_info')
-    async def user_info(self, ctx, user: discord.Member):        
+    async def user_info(self, ctx, user: discord.Member):
         info = (
             f"Имя: {user.name}\n"
             f"Дискриминатор: {user.discriminator}\n"
@@ -56,6 +56,6 @@ class Info(commands.Cog):
             await ctx.send("Роль не найдена.")
         else:
             await ctx.send(f"Непредвиденная ошибка: {error}")
-            
+
 async def setup(bot):
     await bot.add_cog(Info(bot))

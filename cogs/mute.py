@@ -25,7 +25,7 @@ class Mute(commands.Cog):
         await ctx.send(f"Пользователь {member.mention} был размучен.")
 
     @mute.error
-    @unmute.error    
+    @unmute.error
     #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
     async def muterror(self, ctx, error):
         await ctx.send(f"Непредвиденная ошибка: {error}")

@@ -19,7 +19,7 @@ class Invite(commands.Cog):
             invite = await guild.text_channels[0].create_invite(max_age=0, max_uses=0, temporary=False)
             await ctx.send("Пользователь скоро будет приглашён")
             await ctx.author.send(f"https://discord.gg/{invite.code}")
-    
+
     @invite.error
     async def inviteerror(self, ctx, error):
         await ctx.send(f"Непредвиденная ошибка: {error}")
