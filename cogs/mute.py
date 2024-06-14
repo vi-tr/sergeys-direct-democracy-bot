@@ -28,10 +28,7 @@ class Mute(commands.Cog):
     @unmute.error    
     #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
     async def muterror(self, ctx, error):
-        if isinstance(error, commands.MemberNotFound):
-            await ctx.send("Пользователь не найден.")
-        else:
-            await ctx.send(f"Непредвиденная ошибка: {error}")
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(Mute(bot))
