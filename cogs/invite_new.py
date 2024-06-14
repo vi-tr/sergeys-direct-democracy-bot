@@ -12,13 +12,17 @@ class Invite(commands.Cog):
         guild = ctx.guild
 
         choice = await vote(self.bot, ctx=ctx, title=f"Пригласить ли нового пользователя?", options=["Да", "Нет"],
-                        symbols='thumbs', importance=Importance.medium)
+                        symbols='thumbs', importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
         else:
             invite = await guild.text_channels[0].create_invite(max_age=0, max_uses=0, temporary=False)
             await ctx.send("Пользователь скоро будет приглашён")
             await ctx.author.send(f"https://discord.gg/{invite.code}")
+
+    @invite.error
+    async def inviteerror(self, ctx, error):
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 
 async def setup(bot):

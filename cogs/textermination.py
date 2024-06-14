@@ -28,6 +28,10 @@ class Textermination(commands.Cog):
             await channel.delete()
             await ctx.send(f"Текстовый канал '{channel_name}' успешно удален из категории '{category_name}'!")
 
+    @delete_text_channel.error #local exeptions section (global one instead would make much more sense but idk how to get it working (i tried))
+    async def txterror(self, ctx, error):
+            # no ideas what to specialize
+        await ctx.send(f"Непредвиденная ошибка: {error}")
 
 async def setup(bot):
     await bot.add_cog(Textermination(bot))
