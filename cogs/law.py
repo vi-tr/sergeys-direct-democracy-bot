@@ -35,7 +35,7 @@ class Democracy(commands.Cog):
         async def on_message(message):
             if message.author == bot.user:
                 return
-        
+
             for law in laws_dict.values():
                 if law['enforce'] and law['keyword'] in message.content:
                     await message.channel.send(f'{message.author.name} ликвидирован.')
@@ -52,7 +52,7 @@ class Democracy(commands.Cog):
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
-        
+
         laws_dict[law_name] = {
             'keyword' : keyword,
             'description' : description,
@@ -62,24 +62,24 @@ class Democracy(commands.Cog):
 
         save_laws(ctx.guild.id) #Saving current law list to .json after every addition
         await ctx.send(f'Закон "{law_name}" добавлен.\nОписание: {description}\nВлияет на модерацию:{"Да" if enforce else "Нет"}.')
-    
+
     @commands.command(name='remove_law')
     async def remove_law(self, ctx, law_name: str):
-        
+
         if law_name not in laws_dict:
             await ctx.send(f"Закон с названием {law_name} не существует.")
             return
-        
+
         choice = await vote(self.bot, ctx, f"Удалить ли закон {law_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
-        
+
         del laws_dict[law_name]
 
         save_laws(ctx.guild.id) #And after every deletion
         await ctx.send(f'Закон "{law_name}" удален.')
-    
+
     @commands.command('laws')
     async def get_law(self, ctx, law_name=None):
         load_laws(ctx.guild.id) #Getting law list for a server

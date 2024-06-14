@@ -35,7 +35,7 @@ class RoleGive(commands.Cog):
                 # Вот для этого тут и стоит это
                 await ctx.send("Операция невозможна")
                 return
-                    
+
     @commands.command(name='give_role')
     async def poll_give_role(self,
                     ctx,
