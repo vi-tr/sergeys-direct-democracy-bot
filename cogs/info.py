@@ -51,7 +51,7 @@ class Info(commands.Cog):
     @role_info.error
     async def infoerror(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
-            await ctx.send("Пользователь не найден. ЧАБАНОВ!!!! ЕБИ МЕНЯ В ПЕРДАК!!!!!!")
+            await ctx.send("Пользователь не найден.")
         if isinstance(error, commands.RoleNotFound):
             await ctx.send("Роль не найдена.")
         else:
