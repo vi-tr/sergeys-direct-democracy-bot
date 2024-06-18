@@ -43,7 +43,7 @@ class RoleGive(commands.Cog):
                     *role : str):
         role = ''.join([f"{i} " for i in role])
         choice = await vote(self.bot, ctx, f"Дать ли пользователю {name.name} роль - {role}", ["Да", "Нет"], importance=Importance.minor)
-        if choice.pop()==1:
+        if choice==1:
             await ctx.send("Голосование провалилось")
             return
         await self.give_role(ctx,name.name,role[:-1],os.getenv('BOT_TOKEN'))

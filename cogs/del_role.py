@@ -14,12 +14,10 @@ class DeleteRole(commands.Cog):
         try:
             choice = await vote(self.bot, ctx, f"Уничтожаем роль {role_name}?",  ["Да", "Нет"], importance=Importance.minor)
 
-            choice_res = choice.pop()
-
-            if(choice_res == 0):
+            if(choice == 0):
                 await discord.utils.get(ctx.guild.roles, name=role_name).delete()
 
-            await ctx.reply(phrases[choice_res])
+            await ctx.reply(phrases[choice])
         except:
             await ctx.reply("Такой роли нет на сервере(.")
 

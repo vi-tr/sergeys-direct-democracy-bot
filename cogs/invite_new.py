@@ -12,7 +12,7 @@ class Invite(commands.Cog):
         guild = ctx.guild
 
         choice = await vote(self.bot, ctx=ctx, title=f"Пригласить ли нового пользователя?", options=["Да", "Нет"], importance=Importance.minor)
-        if choice.pop() == 1:
+        if choice == 1:
             await ctx.send("Голосование провалилось")
         else:
             invite = await guild.text_channels[0].create_invite(max_age=0, max_uses=0, temporary=False)

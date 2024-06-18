@@ -16,7 +16,7 @@ class SimpleCog(commands.Cog):
     @commands.command(name='poll')
     async def important_poll(self, ctx):
         choice = await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
-        if choice.pop()==0: await ctx.send("Вы реально выбрали А?")
+        if choice==0: await ctx.send("Вы реально выбрали А?")
         else: await ctx.send("Вы реально выбрали Б?")
         choice = await vote(self.bot, ctx, "Что РЕАЛЬНО лучше?", ["Вариант А", "Вариант Б", "Вариант В (секрет)"],
                 symbols=symbol_sets['letters'], importance=Importance.minor)

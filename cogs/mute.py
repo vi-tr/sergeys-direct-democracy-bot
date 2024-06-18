@@ -9,7 +9,7 @@ class Mute(commands.Cog):
     @commands.command(name='mute')
     async def mute(self, ctx, member: discord.Member):
         choice = await vote(self.bot, ctx, f"Замутить ли пользователя {member.name}", ["Да", "Нет"], importance=Importance.minor)
-        if choice.pop()==1:
+        if choice==1:
             await ctx.send("Голосование провалилось")
             return
         await member.edit(mute=True)
@@ -18,7 +18,7 @@ class Mute(commands.Cog):
     @commands.command(name='unmute')
     async def unmute(self, ctx, member: discord.Member):
         choice = await vote(self.bot, ctx, f"Размутить ли пользователя {member.name}", ["Да", "Нет"], importance=Importance.minor)
-        if choice.pop()==1:
+        if choice==1:
             await ctx.send("Голосование провалилось")
             return
         await member.edit(mute=False)
