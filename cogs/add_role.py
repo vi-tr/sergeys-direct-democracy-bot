@@ -64,7 +64,7 @@ class AddRole(commands.Cog):
                 phrases = ["Роль успешно создана!", "Голосование провалилось."]
 
                 choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет"], importance=Importance.minor)
-                await ctx.reply(phrases[choice.pop()])
+                await ctx.reply(phrases[choice])
 
         except:
             await ctx.reply("Вероятно, параметры комманды /add_role были введены в неверном порядке. Попробуйте снова.")

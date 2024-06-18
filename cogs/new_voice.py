@@ -16,7 +16,7 @@ class Voice(commands.Cog):
         category = discord.utils.get(guild.categories, name=category_name)
 
         choice = await vote(self.bot, ctx, f"Создать ли голосовой канал {channel_name} в категории {category_name}", ["Да", "Нет"], importance=Importance.minor)
-        if choice.pop()==1:
+        if choice==1:
             await ctx.send("Голосование провалилось")
             return
         else:

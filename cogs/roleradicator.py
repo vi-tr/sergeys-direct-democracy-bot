@@ -23,7 +23,7 @@ class RoleRemove(commands.Cog):
 
         # execution (literally)
         choice = await vote(self.bot, ctx, f"Уберём у пользователя {user_name} роль {role_name}?", ["Да", "Нет"], importance=Importance.minor) #returned the standart medium value
-        if choice.pop() == 1:
+        if choice == 1:
             await ctx.send("Голосование не подтверждено.")
             return
 

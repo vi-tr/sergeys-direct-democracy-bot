@@ -2,17 +2,19 @@ import discord
 import asyncio
 import time
 from datetime import datetime
-from typing import List, Set, Final, Tuple, Dict
+from typing import List, Set, Final, Tuple, Dict, Callable
 from logging import getLogger
 from enum import Enum
 
 from math import ceil
+from random import choice
 from itertools import groupby
 from operator import itemgetter, attrgetter
 
 _logger = getLogger(__name__)
+_tie_strategy_type = Callable[[Set[int], str, List[str]], int]
 
-global_exclude = []
+global_exclude: List[discord.Member] = []
 
 symbol_sets = {
     'thumbs': ["👍", "👎"],
@@ -39,15 +41,39 @@ def bar_gen(percentage: float, size: int):
     pos = percentage*size
     return '█'*int(pos) + ('' if int(pos)==pos else chars[int(pos%1.0*len(chars))]) + ' '*(size-ceil(pos))
 
+def tie_breaker_random(contest: Set[int], title: str, options: List[str]) -> int:
+    return choice(list(contest))
 
 async def vote(client: discord.Client,
+        ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
+        title: str, options: List[str],
+        symbols: List[str]=symbol_sets['thumbs'], exclude=[],
+        timeout: float|None=None, count: float|None=None,
+        desc: str|None=None, importance: Importance=Importance.medium,
+        tie_strategy: _tie_strategy_type = tie_breaker_random) -> int:
+    result = await _unwrapped_vote(client, ctx, title, options, symbols, exclude, timeout, count, desc, importance, tie_strategy)
+    assert type(result) is int
+    return result
+
+async def vote_multiple_result(client: discord.Client,
+        ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
+        title: str, options: List[str],
+        symbols: List[str]=symbol_sets['thumbs'], exclude=[],
+        timeout: float|None=None, count: float|None=None,
+        desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
+    result = await _unwrapped_vote(client, ctx, title, options, symbols, exclude, timeout, count, desc, importance, None)
+    assert type(result) is Set[int]
+    return result
+
+async def _unwrapped_vote(client: discord.Client,
         # Equivalent to the overlap of abc.Messageable and abc.GuildChannel.
         # Don't know the proper way to do this in python yet.
         ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
         title: str, options: List[str],
         symbols: List[str]=symbol_sets['thumbs'], exclude=[],
         timeout: float|None=None, count: float|None=None,
-        desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
+        desc: str|None=None, importance: Importance=Importance.medium,
+        tie_strategy: _tie_strategy_type | None = tie_breaker_random) -> int | Set[int]:
 
     endtime = time.time() + (importance.timeout() if timeout is None else timeout)
     count = max(1, int(len(ctx.guild.members) * (importance.count() if count is None else count))) # Floor, not round
@@ -83,6 +109,7 @@ async def vote(client: discord.Client,
                 if user not in exclude_ids:
                     try: del votes[user]
                     except KeyError: _logger.warning(f"Somehow a non-existent vote on {msg.id} was removed.")
+
             vote_amounts = [(k,sum(1 for _ in v)) for k,v in groupby(sorted(votes.values()))]
             dvotes = dict(vote_amounts)
             for i in range(len(options)):
@@ -92,4 +119,9 @@ async def vote(client: discord.Client,
         result = set(m[0] for m in vote_amounts if m[1]==max_vl[1])
         _logger.info(f"Vote {msg.id} finished successfully.")
     except asyncio.TimeoutError: _logger.info(f"Vote {msg.id} timed out")
-    return result
+    if tie_strategy is None:
+        type_check_set: Set[int] = result
+        return type_check_set
+    else:
+        type_check_int: int = tie_strategy(result, title, options)
+        return type_check_int

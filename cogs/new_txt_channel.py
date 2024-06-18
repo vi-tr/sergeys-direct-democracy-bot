@@ -17,7 +17,7 @@ class NewTXTChannel(commands.Cog):
 
         choice = await vote(self.bot, ctx, f"Создать ли текстовый канал {channel_name} в категории {category_name}",
                             ["Да", "Нет"], importance=Importance.minor)
-        if choice.pop() == 1:
+        if choice == 1:
             await ctx.send("Голосование провалилось")
             return
         else:
