@@ -57,6 +57,9 @@ class Jail(commands.Cog):
         except:
             await ctx.send("Задано нереальное время")
             return
+        if member.id == self.bot.user.id:
+            await ctx.send("Sergey выше закона")
+            return
         choice = await vote.vote(self.bot, ctx, f"Посадить ли пользователя {member} на {time} минут за{reason}", ["Да", "Нет"], importance=vote.Importance.minor)
         if choice.pop()==0:
             await ctx.send(f"{member} отправился в тюрьму на {time} минут, за{reason}")
