@@ -48,8 +48,8 @@ class Jail(commands.Cog):
             if time<=0:
                 await ctx.send("Задано нереальное время")
                 return
-            if time>10:
-                await ctx.send("Максимальное время тюремного заключения - 10 минут")
+            if time>10080:
+                await ctx.send("Максимальное время тюремного заключения - неделя")
                 return
             if discord.utils.get(ctx.guild.members, name=member) in self.jailed_users:
                 await ctx.send("Пользователь итак в тюрьме")
