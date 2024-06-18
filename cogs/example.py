@@ -13,7 +13,7 @@ class SimpleCog(commands.Cog):
     @commands.command(name='lend_money')
     async def simple_command(self, ctx):
         await ctx.send("Неа")
-    @commands.command(name='poll')
+    @commands.command(name='test_poll')
     async def important_poll(self, ctx):
         choice = await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
         if choice==0: await ctx.send("Вы реально выбрали А?")
