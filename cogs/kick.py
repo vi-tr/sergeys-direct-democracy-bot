@@ -11,8 +11,7 @@ class Kick(commands.Cog):
     @commands.command(name='kick_member')
     async def kick_member(self, ctx, member: discord.Member):
 
-        choice = await vote(self.bot, ctx=ctx, title=f"Выгнать ли {member} с сервера?", options=["Да", "Нет"],
-                            symbols='thumbs', importance=Importance.minor)
+        choice = await vote(self.bot, ctx=ctx, title=f"Выгнать ли {member} с сервера?", options=["Да", "Нет"], importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
         else:

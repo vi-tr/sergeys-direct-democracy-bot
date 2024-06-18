@@ -1,5 +1,4 @@
-from vote import vote, Importance
-import discord
+from vote import vote, Importance, symbol_sets
 from discord.ext import commands
 
 # Здесь мы создаем класс наследующийся от commands.Cog
@@ -19,7 +18,8 @@ class SimpleCog(commands.Cog):
         choice = await vote(self.bot, ctx, "Что лучше?", ["Вариант А", "Вариант Б"], importance=Importance.minor)
         if choice.pop()==0: await ctx.send("Вы реально выбрали А?")
         else: await ctx.send("Вы реально выбрали Б?")
-        choice = await vote(self.bot, ctx, "Что РЕАЛЬНО лучше?", ["Вариант А", "Вариант Б", "Вариант В (секрет)"], symbols='letters', importance=Importance.minor)
+        choice = await vote(self.bot, ctx, "Что РЕАЛЬНО лучше?", ["Вариант А", "Вариант Б", "Вариант В (секрет)"],
+                symbols=symbol_sets['letters'], importance=Importance.minor)
         await ctx.send("Дауж....")
 
 # Вот эту часть кода нужно пистаь обязательно

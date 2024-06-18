@@ -11,8 +11,7 @@ class Invite(commands.Cog):
     async def invite(self, ctx):
         guild = ctx.guild
 
-        choice = await vote(self.bot, ctx=ctx, title=f"Пригласить ли нового пользователя?", options=["Да", "Нет"],
-                        symbols='thumbs', importance=Importance.minor)
+        choice = await vote(self.bot, ctx=ctx, title=f"Пригласить ли нового пользователя?", options=["Да", "Нет"], importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
         else:

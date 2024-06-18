@@ -20,7 +20,7 @@ class Textermination(commands.Cog):
             return
 
         choice = await vote(self.bot, ctx, f"Сносим текстовый канал {channel_name} из категории {category_name}?",
-                            ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+                            ["Да", "Нет"], importance=Importance.minor)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
             return
