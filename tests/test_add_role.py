@@ -15,7 +15,7 @@ async def test_addrole():
         mock_func.retun_value = set([0])
         mock_reaction = MagicMock()
         mock_user = MagicMock()
-        mock_reaction.emoji = "🇦"
+        mock_reaction.emoji = "👍"
         mock_wait.return_value = (mock_reaction, mock_user)
 
         bot = commands.Bot(command_prefix='/', intents=INTENTS)
