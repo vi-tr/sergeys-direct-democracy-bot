@@ -16,7 +16,7 @@ _tie_strategy_type = Callable[[Set[int], str, List[str]], int]
 
 global_exclude: List[discord.Member] = []
 
-symbol_sets = {
+symbol_sets: Final[Dict[str,List[str]]] = {
     'thumbs': ["👍", "👎"],
     'thumbs3': ["👍", "✊", "👎"],
     'letters': ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾"],
