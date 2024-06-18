@@ -2,7 +2,7 @@ import discord
 from discord import Permissions
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
-from vote import vote, Importance
+import vote
 import asyncio
 
 class Jail(commands.Cog):
@@ -57,7 +57,7 @@ class Jail(commands.Cog):
         except:
             await ctx.send("Задано нереальное время")
             return
-        choice = await vote(self.bot, ctx, f"Посадить ли пользователя {member} на {time} минут за{reason}", ["Да", "Нет"], importance=Importance.minor)
+        choice = await vote.vote(self.bot, ctx, f"Посадить ли пользователя {member} на {time} минут за{reason}", ["Да", "Нет"], importance=vote.Importance.minor)
         if choice.pop()==0:
             await ctx.send(f"{member} отправился в тюрьму на {time} минут, за{reason}")
             await self.jail(ctx,member,int(time))
@@ -73,6 +73,7 @@ class Jail(commands.Cog):
                 self.jail_texts.remove(self.jail_texts[i])
                 self.jail_time.remove(self.jail_time[i])
                 self.jail_time_bound.remove(self.jail_time_bound[i])
+        vote.global_exclude = self.jailed_users
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
