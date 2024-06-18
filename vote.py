@@ -8,9 +8,11 @@ from enum import Enum
 
 from math import ceil
 from itertools import groupby
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 
 _logger = getLogger(__name__)
+
+global_exclude = []
 
 symbol_sets = {
     'thumbs': ["👍", "👎"],
@@ -43,12 +45,13 @@ async def vote(client: discord.Client,
         # Don't know the proper way to do this in python yet.
         ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
         title: str, options: List[str],
-        symbols: List[str]=symbol_sets['thumbs'],
+        symbols: List[str]=symbol_sets['thumbs'], exclude=[],
         timeout: float|None=None, count: float|None=None,
         desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
 
     endtime = time.time() + (importance.timeout() if timeout is None else timeout)
     count = max(1, int(len(ctx.guild.members) * (importance.count() if count is None else count))) # Floor, not round
+    exclude_ids = set(map(attrgetter('id'), exclude + global_exclude))
 
     embed = discord.Embed(title=title,
         description=f"{desc or ''}\nГолосование будет окончено автоматически в {datetime.fromtimestamp(endtime).strftime('%Y-%m-%d %H:%M:%S')}, либо когда проголосуют {count} человек(а).",
@@ -72,12 +75,16 @@ async def vote(client: discord.Client,
             except ValueError: continue
             if first is add:
                 remove.cancel()
-                votes[add.result()[1].id]=idx
+                user=add.result()[1].id
+                if user not in exclude_ids: votes[user]=idx
             else:
                 add.cancel()
-                try: del votes[remove.result()[1].id]
-                except KeyError: _logger.warning(f"Somehow a non-existent vote on {msg.id} was removed.")
-            dvotes = dict(vote_amounts := [(k,sum(1 for _ in v)) for k,v in groupby(sorted(votes.values()))])
+                user=remove.result()[1].id
+                if user not in exclude_ids:
+                    try: del votes[user]
+                    except KeyError: _logger.warning(f"Somehow a non-existent vote on {msg.id} was removed.")
+            vote_amounts = [(k,sum(1 for _ in v)) for k,v in groupby(sorted(votes.values()))]
+            dvotes = dict(vote_amounts)
             for i in range(len(options)):
                 embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbols[i]} {bar_gen(dvotes.get(i,0)/max(1,len(votes)),20)} ({dvotes.get(i,0)})", inline=False)
             await msg.edit(embed=embed)
