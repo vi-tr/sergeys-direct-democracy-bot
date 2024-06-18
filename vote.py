@@ -12,6 +12,13 @@ from operator import itemgetter
 
 _logger = getLogger(__name__)
 
+symbol_sets = {
+    'thumbs': ["👍", "👎"],
+    'thumbs3': ["👍", "✊", "👎"],
+    'letters': ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾"],
+    'numbers': ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
+}
+
 class Importance(Enum):
     minor=1; medium=2; major=3
     def timeout(self) -> int:
@@ -36,7 +43,7 @@ async def vote(client: discord.Client,
         # Don't know the proper way to do this in python yet.
         ctx: discord.TextChannel | discord.VoiceChannel | discord.StageChannel,
         title: str, options: List[str],
-        symbols: str='thumbs',
+        symbols: List[str]=symbol_sets['thumbs'],
         timeout: float|None=None, count: float|None=None,
         desc: str|None=None, importance: Importance=Importance.medium) -> Set[int]:
 
@@ -48,22 +55,11 @@ async def vote(client: discord.Client,
         colour=0xed333b, timestamp=datetime.now()
     )
     embed.set_author(name="Голосование")
-    symbol_set: List[str] = []
-    match symbols:
-        case 'thumbs':
-            match len(options):
-                case 2: symbol_set = ["👍", "👎"]
-                case 3: symbol_set = ["👍", "✊", "👎"]
-                case _: assert False
-        case 'letters':
-            symbol_set = ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴", "🇵", "🇶", "🇷", "🇸", "🇹", "🇺", "🇻", "🇼", "🇽", "🇾"]
-        case 'numbers':
-            symbol_set = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
-    assert len(options) <= len(symbol_set), 'Количество опций голосование превышает количество доступных символов'
+    assert len(options) <= len(symbols), 'Количество опций голосование превышает количество доступных символов'
 
-    for i, f in enumerate(options): embed.add_field(name=f, value=symbol_set[i]+" (0)", inline=False)
+    for i, f in enumerate(options): embed.add_field(name=f, value=symbols[i]+" (0)", inline=False)
     msg = await ctx.send(embed=embed)
-    for i in range(len(options)): await msg.add_reaction(symbol_set[i])
+    for i in range(len(options)): await msg.add_reaction(symbols[i])
     _logger.info(f"Vote {msg.id} started")
     result: Set[int] = set()
     try:
@@ -72,7 +68,7 @@ async def vote(client: discord.Client,
         while len(votes) < count:
             add, remove = asyncio.create_task(client.wait_for('reaction_add')), asyncio.create_task(client.wait_for('reaction_remove'))
             first = (await asyncio.wait([add, remove], return_when=asyncio.FIRST_COMPLETED, timeout=endtime-time.time()))[0].pop()
-            try: idx = symbol_set.index(str(first.result()[0].emoji))
+            try: idx = symbols.index(str(first.result()[0].emoji))
             except ValueError: continue
             if first is add:
                 remove.cancel()
@@ -83,7 +79,7 @@ async def vote(client: discord.Client,
                 except KeyError: _logger.warning(f"Somehow a non-existent vote on {msg.id} was removed.")
             dvotes = dict(vote_amounts := [(k,sum(1 for _ in v)) for k,v in groupby(sorted(votes.values()))])
             for i in range(len(options)):
-                embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbol_set[i]} {bar_gen(dvotes.get(i,0)/max(1,len(votes)),20)} ({dvotes.get(i,0)})", inline=False)
+                embed.set_field_at(i, name=embed.fields[i].name, value=f"{symbols[i]} {bar_gen(dvotes.get(i,0)/max(1,len(votes)),20)} ({dvotes.get(i,0)})", inline=False)
             await msg.edit(embed=embed)
         max_vl = max(vote_amounts,key=itemgetter(1))
         result = set(m[0] for m in vote_amounts if m[1]==max_vl[1])
