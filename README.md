@@ -2,6 +2,8 @@
 
 #### КФУ им. Вернандского — Современные технологии программирования
 
+![Тесты](https://github.com/vi-tr/sergeys-direct-democracy-bot/actions/workflows/pytest.yml/badge.svg)
+
 Бот, позволяющий пользователям редактировать сервер в discord путем
 голосования.
 
