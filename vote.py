@@ -123,5 +123,7 @@ async def _unwrapped_vote(client: discord.Client,
         type_check_set: Set[int] = result
         return type_check_set
     else:
-        type_check_int: int = tie_strategy(result, title, options)
-        return type_check_int
+        i: int = tie_strategy(result, title, options)
+        embed.set_field_at(i, name='*'+(embed.fields[i].name or '')+'*', value=embed.fields[i].value, inline=False)
+        await msg.edit(embed=embed)
+        return i
