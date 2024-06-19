@@ -42,7 +42,7 @@ class RoleGive(commands.Cog):
                     name : discord.Member, # this is universal
                     *role : str):
         role = ''.join([f"{i} " for i in role])
-        choice = await vote(self.bot, ctx, f"Дать ли пользователю {name.name} роль - {role}", ["Да", "Нет"], importance=Importance.minor)
+        choice = await vote(self.bot, ctx, f"Дать ли пользователю {name.name} роль - {role}", ["Да", "Нет"], importance=Importance.medium)
         if choice==1:
             await ctx.send("Голосование провалилось")
             return

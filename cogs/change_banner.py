@@ -33,7 +33,7 @@ class ChangeIcon(commands.Cog):
     @commands.command(name='change_icon')
     async def change_banner_poll(self,
                     ctx : discord.TextChannel | discord.VoiceChannel | discord.StageChannel):
-        choice = await vote(self.bot, ctx=ctx, title=f"Поставить ли новую аву?", options=["Да", "Нет"], importance=Importance.minor)
+        choice = await vote(self.bot, ctx=ctx, title=f"Поставить ли новую аву?", options=["Да", "Нет"], importance=Importance.medium)
         if choice == 1:
             await ctx.send("Голосование провалилось")
         else:
