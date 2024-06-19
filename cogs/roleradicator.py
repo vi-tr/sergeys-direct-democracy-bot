@@ -15,7 +15,7 @@ class RoleRemove(commands.Cog):
             await ctx.send(f'Роль {role_name} не найдена на сервере')
             return
         # execution (literally)
-        choice = await vote(self.bot, ctx, f"Уберём с сервера роль {role_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor) #returned the standart medium value
+        choice = await vote(self.bot, ctx, f"Уберём с сервера роль {role_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium) #returned the standart medium value
         if choice.pop() == 1:
             await ctx.send("Голосование не подтверждено.")
             return
@@ -42,7 +42,7 @@ class RoleRemove(commands.Cog):
             return
 
         # execution (literally)
-        choice = await vote(self.bot, ctx, f"Уберём у пользователя {user_name} роль {role_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor) #returned the standart medium value
+        choice = await vote(self.bot, ctx, f"Уберём у пользователя {user_name} роль {role_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium) #returned the standart medium value
         if choice.pop() == 1:
             await ctx.send("Голосование не подтверждено.")
             return

@@ -16,7 +16,7 @@ class NewTXTChannel(commands.Cog):
         category = discord.utils.get(guild.categories, name=category_name)
 
         choice = await vote(self.bot, ctx, f"Создать ли текстовый канал {channel_name} в категории {category_name}",
-                            ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+                            ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
         if choice.pop() == 1:
             await ctx.send("Голосование провалилось")
             return

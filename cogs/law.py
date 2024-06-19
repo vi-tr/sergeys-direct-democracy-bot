@@ -48,7 +48,7 @@ class Democracy(commands.Cog):
         if law_name in laws_dict:
             await ctx.send(f"Закон с названием {law_name} уже существует.")
             return
-        choice = await vote(self.bot, ctx, f"Добавить ли закон {law_name}?\nОписание закона:\n{description}", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+        choice = await vote(self.bot, ctx, f"Добавить ли закон {law_name}?\nОписание закона:\n{description}", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return
@@ -70,7 +70,7 @@ class Democracy(commands.Cog):
             await ctx.send(f"Закон с названием {law_name} не существует.")
             return
 
-        choice = await vote(self.bot, ctx, f"Удалить ли закон {law_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.minor)
+        choice = await vote(self.bot, ctx, f"Удалить ли закон {law_name}?", ["Да", "Нет"], symbols='thumbs', importance=Importance.medium)
         if choice.pop()==1:
             await ctx.send("Голосование провалилось")
             return

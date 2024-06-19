@@ -63,7 +63,7 @@ class AddRole(commands.Cog):
 
                 phrases = ["Роль успешно создана!", "Голосование провалилось.", "Люди выбрали третью опцию. Примечание цензурщика: Зачем? Просто в чём смысл? Какая душевная неуравновешенность заставила тебя добавить эту опцию? TODO: Удалить"]
 
-                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет", "Третья опция"], symbols='letters',importance=Importance.minor)
+                choice = await vote(self.bot, ctx, f"Создаем роль {role_name}?", ["Да", "Нет", "Третья опция"], symbols='letters',importance=Importance.medium)
                 await ctx.reply(phrases[choice.pop()])
 
         except:

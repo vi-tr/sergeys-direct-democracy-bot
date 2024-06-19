@@ -12,7 +12,7 @@ class DeleteRole(commands.Cog):
         phrases = ["Роль успешно уничтожена!", "Голосование провалилось."]
         role_name = ' '.join(role_name_args)
         try:
-            choice = await vote(self.bot, ctx, f"Уничтожаем роль {role_name}?",  ["Да", "Нет"],  symbols='thumbs', importance=Importance.minor)
+            choice = await vote(self.bot, ctx, f"Уничтожаем роль {role_name}?",  ["Да", "Нет"],  symbols='thumbs', importance=Importance.medium)
 
             choice_res = choice.pop()
 
